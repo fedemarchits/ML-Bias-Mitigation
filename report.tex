@@ -7,6 +7,8 @@
 \usepackage{booktabs}
 \usepackage{caption}
 \usepackage{arydshln}
+\usepackage{float}
+\usepackage{multirow}
 
 % Set page size and margins
 % Replace `letterpaper' with `a4paper' for UK/EU standard size
@@ -17,6 +19,9 @@
 \usepackage{graphicx}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
 \usepackage{tcolorbox}
+%\usepackage[backed=biber, style=au-thoryear]{biblio}
+%\addbibresource{biblio.bib}
+\usepackage[utf8]{inputenc}
 \title{Bias in Law School Admissions: Analysis and Mitigation Using Machine Learning}
 %\author{Federico Marchi, Christina Baytcheva, Anna Di Iulio}
 \author{
@@ -33,7 +38,7 @@
 \maketitle
 
 \begin{abstract}
-The legal profession remains one of the least diverse in the U.S., and the bar exam may play a role in that. Exploiting a Law School Admissions dataset from the Law School Admissions Council (LSAC) \cite{lsacdata}, we aim to explore how racial and ethnic disparities manifest in law school bar passage rates. Using publicly available data, we plan to examine whether schools with higher percentages of students from underrepresented racial and ethnic backgrounds tend to have lower first-time bar exam pass rates, even when controlling for academic and institutional factors. Our goal is to analyze potential sources of bias, test machine learning models for fairness, and explore strategies to reduce algorithmic and systemic inequities.
+The legal profession remains one of the least diverse in the U.S., and the bar exam may play a role in that. Exploiting a Law School Admissions dataset from the Law School Admissions Council (LSAC) , we aim to explore how racial and ethnic disparities manifest in law school bar passage rates. Using publicly available data, we plan to examine whether schools with higher percentages of students from underrepresented racial and ethnic backgrounds tend to have lower first-time bar exam pass rates, even when controlling for academic and institutional factors. Our goal is to analyze potential sources of bias, test machine learning models for fairness, and explore strategies to reduce algorithmic and systemic inequities.
 
 \end{abstract}
 
@@ -42,15 +47,27 @@ The legal profession remains one of the least diverse in the U.S., and the bar e
 The bar exam plays a critical role in determining who enters the legal profession, yet it may also reflect broader racial and systemic inequalities. This project will use student-level data to explore how racial and ethnic disparities influence bar passage rates. Through exploratory data analysis and the application of machine learning classification models (pass vs. fail), we aim to identify patterns of bias and assess the extent to which these models inherit or amplify existing inequities in the data. Finally, we will test bias mitigation techniques to evaluate whether more balanced and fair predictions can be achieved without significantly compromising model performance.
 
 \section{Background and Motivation}
-We recognize the importance of studying the fairness of algorithms in the educational context as it is of high relevance in today's world, and it is necessary to achieve results which are acceptable in order to maintain equality and non-discrimination in this field, and make sure everyone is given a fair chance regardless of their features. 
+We recognize the importance of studying the fairness of algorithms in the educational context as it is of high relevance in today’s world, and it is necessary to achieve results which are acceptable in order to maintain equality and non-discrimination in this field, and make sure everyone is given a fair chance regardless of their features.
 
-Previous studies have conducted similar research by training models to assess how bias is learned and to what extent mild bias contained in the dataset can have a heavy influence on the bias after the prediction model(\href{https://www.researchgate.net/publication/387044808_Fair_and_Transparent_Student_Admission_Prediction_Using_Machine_Learning_Models#read}{Fair and Transparent Student Admission Prediction Using Machine Learning Models}). Furthermore, it is interesting to see how the models we are going to develop in this study are going to reflect on a different dataset from a different country, to see if transfer learning is possible(\href{paper-2024-ull-dataset-benchmark.pdf}{Unfair Inequality in Education: A Benchmark for AI-Fairness Research}).
+\subsection{Brief Literature Review}
+
+We recognize the importance of studying the fairness of algorithms in the educational context as it is
+ of high relevance in today’s world, and it is necessary to achieve results which are acceptable in order
+ to maintain equality and non-discrimination in this field, and make sure everyone is given a fair chance
+ regardless of their features.
+
+\subsection{Brief Literature Review}
+
+The initial step of this study involved performing a brief literature review, which started with the original paper connected to the dataset we are examining. It is a large scale empirical study designed to study the patterns in the bar pass exam outcome. The LSAC National Longitudinal Bar Passage Study \cite{lsacdata} found that nearly 95\% of all law graduates eventually passed the bar exam, including approximately 85\% of students of color, dispelling widespread myths about minority failure rates. While first-time pass rates varied more sharply by race, eventual pass rates converged significantly, with most students passing within one or two attempts. Logistic regression analysis identified law school GPA (LGPA) as the most powerful predictor of bar passage, followed by LSAT score; together, these academic indicators far outperformed other variables such as undergraduate GPA, school selectivity, socioeconomic status, or demographic background. Race and ethnicity had diminished predictive value once LGPA and LSAT were accounted for, and no consistent demographic profile could distinguish successful from unsuccessful candidates. Additionally, bar passage odds varied somewhat by law school groupings and geographic jurisdiction, though these structural differences were secondary to individual academic performance. Overall, the study strongly supports the effectiveness of holistic admissions and affirms that students of color, despite entering law school with lower average LSAT and GPA scores, graduate and pass the bar at high rates, especially when they perform well academically during law school.
+
+Furthemore, there are studies which try to tackle the same problem as this specific one, and we could take into account their findings before embarking in our own analysis. The first paper we considered demonstrates that amongst the classical Machine Learning models, Logistic Regression plays a particularly valuable role due to its transparency given the task of predicting the outcome of the bar exam. The study shows that fairness-aware modelling techniques—such as preprocessing adjustments or post-processing calibration—enable the responsible inclusion of sensitive attributes without perpetuating discrimination. (Fair and Transparent Student Admission Prediction Using Machine Learning Models  \cite{unknown2023fairadmission})
+
+One second paper \cite{Sulaiman2022fair} instead suggested the use of the SAINT transformer architecture which didn't need any debiasing technique as the performances were more than satisfactory on their own. Still, for the sake of this study we preferred to check the performance and mitigation of lower-level models like Logistic Regression, Random Forest and XGBoost.
 
 
 
 \section{Dataset}
-The chosen dataset is available on Kaggle at the following link: 
-\href{https://www.kaggle.com/datasets/danofer/law-school-admissions-bar-passage/data}{law school admission dataset}, and it is a snapshot of the  Law School Admissions dataset from the Law School Admissions Council (LSAC). To this day, it is the largest dataset that exists which contains demographic and academic information about aspiring lawyers, and even if it was created in 1998 it is still relevant. 
+The chosen dataset is available on Kaggle \cite{danofer2022lawschool} , and it is a snapshot of the  Law School Admissions dataset from the Law School Admissions Council (LSAC). To this day, it is the largest dataset that exists which contains demographic and academic information about aspiring lawyers, and even if it was created in 1998 it is still relevant. 
 
 The contained information, as previously mentioned, is both demographic and academic. In the demographic subset of features we mainly find two:
 \begin{enumerate}
@@ -132,7 +149,7 @@ The findings for this section are extremely important to identify where bias mig
     \item The family income distribution is unbalanced in a similar way to race, but in this case it is noticeable how group 5, which is the second to last in terms of number of elements, still has the highest pass rate. 
     \noindent
     \begin{center}
-      \includegraphics[width=0.5\textwidth]{family income distribution.png}
+      \includegraphics[width=0.5\textwidth]{family_income_distribution.png}
       \vspace{0.5em}
       \textbf{Figure:} Distribution of family income
     \end{center}
@@ -454,7 +471,6 @@ As shown in the table, the model generalizes well, with almost no overfitting:
   \label{fig:model_comparison}
 \end{figure}
 Logistic Regression and MLP have the highest F2 scores (0.48), indicating strong recall on class 0. Logistic Regression also has the best accuracy (0.86), making it the most balanced performer. XGBoost lags in accuracy (0.78), while Random Forest performs slightly lower overall.
-\newpage
 \subsection{Bias detection after prediction}
 After the predictions are performed, it is necessary to check if the new predicted label conveys the same type of bias that is observable in the ground truth variable. When the same analysis is conducted, what is observable is a worsening of the situation in all three features where bias was present. 
 
@@ -522,35 +538,34 @@ The following three tables contain the results of the bias detection method on t
 
 \vspace{1em}
 
-\begin{center}
-\captionof{table}{Fairness Metrics by Model and Tier compared to 6}
+\begin{table}[htbp]
+\centering
+\caption{Fairness Metrics by Model and Tier compared to 6}
 \begin{tabular}{llrr}
 \toprule
-\textbf{Model} & \textbf{Income Group} & \textbf{Disparate Impact} & \textbf{Statistical Parity Difference} \
+\textbf{Model} & \textbf{Income Group} & \textbf{Disparate Impact} & \textbf{Statistical Parity Difference} \\
 \midrule
-\textbf{Logistic Regression Best}
-& 1 & 0.568 & -0.415 \
-& 2 & 0.747 & -0.242 \
-& 3 & 0.846 & -0.147 \
-& 4 & 0.916 & -0.081 \
-& 5 & 0.938 & -0.060 \
+\textbf{Logistic Regression Best} & 1 & 0.568 & -0.415 \\
+                                   & 2 & 0.747 & -0.242 \\
+                                   & 3 & 0.846 & -0.147 \\
+                                   & 4 & 0.916 & -0.081 \\
+                                   & 5 & 0.938 & -0.060 \\
 \midrule
-\textbf{Random Forest}
-& 1 & 0.537 & -0.427 \
-& 2 & 0.767 & -0.215 \
-& 3 & 0.849 & -0.139 \
-& 4 & 0.892 & -0.099 \
-& 5 & 0.908 & -0.085 \
+\textbf{Random Forest}             & 1 & 0.537 & -0.427 \\
+                                   & 2 & 0.767 & -0.215 \\
+                                   & 3 & 0.849 & -0.139 \\
+                                   & 4 & 0.892 & -0.099 \\
+                                   & 5 & 0.908 & -0.085 \\
 \midrule
-\textbf{XGBoost R}
-& 1 & 0.310 & -0.608 \
-& 2 & 0.629 & -0.327 \
-& 3 & 0.837 & -0.143 \
-& 4 & 0.902 & -0.086 \
-& 5 & 0.891 & -0.096 \
+\textbf{XGBoost R}                & 1 & 0.310 & -0.608 \\
+                                   & 2 & 0.629 & -0.327 \\
+                                   & 3 & 0.837 & -0.143 \\
+                                   & 4 & 0.902 & -0.086 \\
+                                   & 5 & 0.891 & -0.096 \\
 \bottomrule
 \end{tabular}
-\end{center}
+\end{table}
+
 
 \vspace{1em}
 
@@ -676,25 +691,27 @@ For the other two models, instead, adopting the textbook or classical approach d
 
 In the Random Forest case, even if all features perform worse than seen in logistic regression, only the Race does not reach the acceptable value of 80\%, while the same cannot be said of XGBoost, which instead underperforms in all categories. 
 
-\begin{center}
-\captionof{table}{Random Forest}
+\begin{table}[ht]
+\centering
+\caption{Random Forest}
+\label{tab:fairness_alternative_config}
 \begin{tabular}{llrrr}
 \toprule
-Attribute & Group & Disparate Impact & Stat. Parity Diff.
+Attribute & Group & Disparate Impact & Stat. Parity Diff. \\
 \midrule
-\textbf{Race}
+\textbf{Race} \\
 & 0 & 0.8402 & -0.1420 \\
 & 1 & 0.4947 & -0.4490 \\
 & 2 & 0.6986 & -0.2678 \\
 & 3 & 0.8190 & -0.1609 \\
 \midrule
-\textbf{Family Income}
+\textbf{Family Income} \\
 & 1.0 & 0.7919 & -0.1790 \\
 & 2.0 & 0.8886 & -0.0959 \\
 & 3.0 & 0.9613 & -0.0333 \\
 & 4.0 & 1.0148 & 0.0128 \\
 \midrule
-\textbf{Tier}
+\textbf{Tier} \\
 & 1 & 0.8073 & -0.1739 \\
 & 2 & 0.8714 & -0.1161 \\
 & 3 & 0.9167 & -0.0752 \\
@@ -702,8 +719,8 @@ Attribute & Group & Disparate Impact & Stat. Parity Diff.
 & 5 & 0.9534 & -0.0420 \\
 \bottomrule
 \end{tabular}
-\label{tab:fairness_alternative_config}
-\end{center}
+\end{table}
+
 
 \begin{center}
 \captionof{table}{XGBoost}
@@ -742,7 +759,162 @@ Contrarily to LR, both Random Forest and XGBoost are nonlinear ensemble models t
 The technique we've decided to use in order to remove bias from the best models previously found is the \textbf{Exponentiated Gradient}. It's a fairness-aware reduction technique and it solves a constrained optimization problem: it tries to maximize accuracy while satisfy fairness constrain. It does this by training an ensemble of classifiers. The fairness constraint that will be used in this mitigation technique is the \textbf{Demographic Parity}.\\ \\
 For each model, the constraint has first been set over one biased feature at time, then all of them together.
 \paragraph{Logistic Regression}\mbox{}\\
+\begin{table}[H]
+\caption{LR performances, one constraint at time}
+\begin{tabular}{lccc|ccc}
+\hline
+\textbf{Constrained Feature} & \textbf{Group} & \textbf{DI} & \textbf{SPD} & \textbf{Precision (0 - 1)} & \textbf{Recall (0 - 1)} & \textbf{Accuracy} \\
+\hline
+\multirow{4}{*}{Family Income} & 1 & 0.989 & 0.027 & \multirow{4}{*}{0.06 - 0.98} & \multirow{4}{*}{0.94 - 0.18} & \multirow{4}{*}{0.22} \\
+                               & 2 & 1.088 & 0.014 &                                &                               &                        \\
+                               & 3 & 1.104 & 0.017 &                                &                               &                        \\
+                               & 4 & 1.167 & 0.027 &                                &                               &                        \\
+\hline
+\multirow{5}{*}{Tier}          & 1 & 1.012 & 0.010 & \multirow{5}{*}{0.14 - 0.97} & \multirow{5}{*}{0.23 - 0.88} & \multirow{5}{*}{0.80} \\
+                               & 2 & 0.997 & -0.002 &                               &                               &                        \\
+                               & 3 & 0.981 & -0.015 &                               &                               &                        \\
+                               & 4 & 1.004 & 0.003 &                                &                               &                        \\
+                               & 5 & 0.074 & -0.021 &                               &                               &                        \\
+\hline
+\multirow{4}{*}{Race}          & asian & 0.987 & -0.011 & \multirow{4}{*}{0.15 - 0.96} & \multirow{4}{*}{0.33 - 0.90} & \multirow{4}{*}{0.87} \\
+                               & black & 1.000 & 0.000  &                               &                               &                        \\
+                               & hisp  & 0.992 & -0.007 &                               &                               &                        \\
+                               & other & 0.963 & -0.033 &                               &                               &                        \\
+\end{tabular}
+\end{table}
+Table 21 shows the logistic regression model performance when applying the Demographic Parity (DP) constraint on one feature at a time. The fairness metrics (DI and SPD) generally indicate balanced outcomes across groups, especially for Tier and Race, where DI values remain close to 1 and SPD differences are minimal. However, performance metrics vary: for Family Income, precision and recall are highly unstable (ranging from 0.06 to 0.98 and 0.94 to 0.18, respectively) with very low accuracy (0.22). For Tier and Race, the precision and recall are higher and more stable, leading to better overall accuracy (0.80 and 0.87, respectively).
 
+
+\begin{table}[H]
+\caption{LR performances, all constraints together}
+\begin{tabular}{llcc|ccc}
+\hline
+\textbf{Bias w.r.t.}                   &  \textbf{Group} & \multicolumn{1}{l}{ \textbf{DI} } & \multicolumn{1}{l}{ \textbf{SPD}}    & \multicolumn{1}{l}{ \textbf{Precision (0 - 1)}} & \multicolumn{1}{l}{\textbf{Recall (0 - 1)}} & \multicolumn{1}{l}{\textbf{Accuracy}} \\
+\hline
+\multirow{4}{*}{Family Income} & 1     & 1.027                  & 0.003                      & \multirow{13}{*}{0.05 - 0.95}         & \multirow{13}{*}{0.89 - 0.19}      & \multirow{13}{*}{0.14}       \\
+                               & 2     & 0.860                  & -0.016                     &                                       &                                    &                              \\
+                               & 3     & 0.955                  & -0.005                     &                                       &                                    &                              \\
+                               & 4     & 1.000                  & 0.000                      &                                       &                                    &                              \\
+\cline{1-4}
+\multirow{5}{*}{Tier}          & 1     & 1.066                  & 0.007                      &                                       &                                    &                              \\
+                               & 2     & 1.236                  & 0.025                      &                                       &                                    &                              \\
+                               & 3     & 1.024                  & 0.003                      &                                       &                                    &                              \\
+                               & 4     & 0.968                  & -0.003                     &                                       &                                    &                              \\
+                               & 5     & 1.041                  & 0.004                      &                                       &                                    &                              \\
+\cline{1-4}
+\multirow{4}{*}{Race}          & asian & 1.047                  & \multicolumn{1}{l|}{0.005}  &                                       &                                    &                              \\
+                               & black & 1.055                  & \multicolumn{1}{l|}{0.006}  &                                       &                                    &                              \\
+                               & hisp  & 0.974                  & \multicolumn{1}{l|}{-0.003} &                                       &                                    &                              \\
+                               & other & 0.782                  & \multicolumn{1}{l|}{-0.024} &                                       &                                    &                              \\
+\end{tabular}
+\end{table}
+Table 22 presents the LR model performance when applying the DP constraint across all features simultaneously. While the fairness metrics remain relatively balanced (DI close to 1), they exhibit slightly larger variability (e.g. Family Income DI: 0.860–1.027, Tier DI: 0.968–1.236, Race DI: 0.782–1.047). However, the model’s performance significantly deteriorates: precision collapses (0.05–0.95) and recall ranges widely (0.89–0.19), resulting in a notably low overall accuracy of 0.14. This indicates that enforcing fairness across multiple features simultaneously substantially challenges the model’s predictive performance.\\ \\
+Comparing the two tables highlights a trade-off between fairness and performance. Applying the DP constraint one feature at a time (Table 21) tends to preserve model accuracy—particularly for Tier and Race—while maintaining balanced group outcomes. In contrast, constraining all features together (Table 22) achieves overall group fairness but at the expense of precision, recall, and especially accuracy. This suggests that enforcing fairness constraints individually can be more effective in balancing fairness and predictive performance than enforcing them collectively across all features.
+
+\paragraph{Random Forest}\mbox{}\\
+\begin{table}[H]
+\caption{RF performances, one constraint at time}
+\begin{tabular}{lccc|ccc}
+\hline
+\textbf{Constrained Feature} & \textbf{Group} & \textbf{DI} & \textbf{SPD} & \textbf{Precision (0 - 1)} & \textbf{Recall (0 - 1)} & \textbf{Accuracy} \\
+\hline
+\multirow{4}{*}{Family Income} & 1     & 0.962                  & -0.031                     & \multirow{4}{*}{0.18 - 0.98}                     & \multirow{4}{*}{0.66 - 0.84}                     & \multirow{4}{*}{0.83}                     \\
+                               & 2     & 1.002                  & 0.001                      &                                                  &                                                  &                                           \\
+                               & 3     & 1.000                  & 0.000                      &                                                  &                                                  &                                           \\
+                               & 4     & 1.006                  & 0.005                      &                                                  &                                                  &                                           \\
+\hline
+\multirow{5}{*}{Tier}          & 1     & 0.988                  & -0.010                     & \multirow{5}{*}{0.18 - 0.98}                     & \multirow{5}{*}{0.60 - 0.85}                     & \multirow{5}{*}{0.84}                     \\
+                               & 2     & 0.979                  & -0.017                     &                                                  &                                                  &                                           \\
+                               & 3     & 1.012                  & 0.010                      &                                                  &                                                  &                                           \\
+                               & 4     & 0.987                  & -0.011                     &                                                  &                                                  &                                           \\
+                               & 5     & 0.993                  & -0.006                     &                                                  &                                                  &                                           \\
+\hline
+\multirow{4}{*}{Race}          & asian & 1.005                  & \multicolumn{1}{l|}{0.004}  & \multicolumn{1}{c}{\multirow{4}{*}{0.12 - 0.96}} & \multicolumn{1}{c}{\multirow{4}{*}{0.33 - 0.87}} & \multicolumn{1}{c}{\multirow{4}{*}{0.84}} \\
+                               & black & 0.989                  & \multicolumn{1}{l|}{-0.009} & \multicolumn{1}{l}{}                             & \multicolumn{1}{l}{}                             & \multicolumn{1}{l}{}                      \\
+                               & hisp  & 0.994                  & \multicolumn{1}{l|}{-0.006} & \multicolumn{1}{l}{}                             & \multicolumn{1}{l}{}                             & \multicolumn{1}{l}{}                      \\
+                               & other & 1.006                  & \multicolumn{1}{l|}{0.005}  & \multicolumn{1}{l}{}                             & \multicolumn{1}{l}{}                             & \multicolumn{1}{l}{}                     
+\end{tabular}
+\end{table}
+Table 23 presents the Random Forest (RF) model’s performance when applying the Demographic Parity (DP) constraint to one feature at a time. The DI (Disparate Impact) values stay close to 1, showing balanced group outcomes, with SPD (Statistical Parity Difference) values ranging from -0.031 to 0.010, indicating slight but controlled disparities. Precision and recall ranges remain relatively stable across all features (Precision: 0.12-0.98, Recall: 0.33-0.87), and the overall accuracy remains high (0.83-0.84) regardless of which feature is constrained. This suggests that the RF model can maintain both fairness and performance when DP is applied to a single feature.
+\begin{table}[H]
+\caption{RF performances, all constraints together}
+\begin{tabular}{llcc|ccc}
+\hline
+\textbf{Bias w.r.t.}                   &  \textbf{Group} & \multicolumn{1}{l}{ \textbf{DI} } & \multicolumn{1}{l}{ \textbf{SPD}}    & \multicolumn{1}{l}{ \textbf{Precision (0 - 1)}} & \multicolumn{1}{l}{\textbf{Recall (0 - 1)}} & \multicolumn{1}{l}{\textbf{Accuracy}} \\
+\hline
+\multirow{4}{*}{Family Income} & 1     & 1.014                  & 0.011                      & \multirow{13}{*}{0.11 - 0.96}         & \multirow{13}{*}{0.43 - 0.81}      & \multirow{13}{*}{0.79}       \\
+                               & 2     & 0.984                  & -0.013                     &                                       &                                    &                              \\
+                               & 3     & 1.004                  & 0.003                      &                                       &                                    &                              \\
+                               & 4     & 1.001                  & 0.001                      &                                       &                                    &                              \\
+\hline
+\multirow{5}{*}{Tier}          & 1     & 0.989                  & -0.009                     &                                       &                                    &                              \\
+                               & 2     & 0.987                  & -0.010                     &                                       &                                    &                              \\
+                               & 3     & 0.989                  & -0.009                     &                                       &                                    &                              \\
+                               & 4     & 0.987                  & -0.010                     &                                       &                                    &                              \\
+                               & 5     & 0.995                  & -0.004                     &                                       &                                    &                              \\
+\hline
+\multirow{4}{*}{Race}          & asian & 0.996                  & \multicolumn{1}{l|}{-0.003} &                                       &                                    &                              \\
+                               & black & 0.972                  & \multicolumn{1}{l|}{-0.022} &                                       &                                    &                              \\
+                               & hisp  & 0.994                  & \multicolumn{1}{l|}{-0.005} &                                       &                                    &                              \\
+                               & other & 0.984                  & \multicolumn{1}{l|}{-0.013} &                                       &                                    &                             
+\end{tabular}
+\end{table}
+Table 24 reports the RF model’s performance when applying DP constraints simultaneously across all features. DI and SPD remain close to parity across groups, with DI values ranging from 0.972 to 1.014 and SPD from -0.022 to 0.011, indicating effective fairness constraint enforcement. However, the precision and recall ranges are narrower (0.11-0.96 for precision and 0.43-0.81 for recall) compared to applying DP individually, showing slightly more consistent but limited performance. The accuracy is still reasonably high at 0.79, indicating that the RF model manages to balance fairness and performance even when multiple constraints are enforced together.\\ \\
+Comparing Tables 23 and 24 reveals that the RF model handles DP constraints more robustly than the logistic regression model. When applying DP one feature at a time (Table 23), the RF model maintains high accuracy (0.83-0.84) with stable precision and recall, indicating minimal performance degradation. When applying all DP constraints together (Table 24), the accuracy only slightly drops to 0.79, while fairness metrics remain consistent and balanced. This suggests that RF is more resilient to fairness interventions, maintaining strong predictive performance while achieving fairness goals.
+\paragraph{XGBoost}\mbox{}\\
+\begin{table}[H]
+\caption{XGBoost performances, one constraint at time}
+\begin{tabular}{lccc|ccc}
+\hline
+\textbf{Constrained Feature} & \textbf{Group} & \textbf{DI} & \textbf{SPD} & \textbf{Precision (0 - 1)} & \textbf{Recall (0 - 1)} & \textbf{Accuracy} \\
+\hline
+\multirow{4}{*}{Family Income} & 1     & 0.990                  & -0.008                     & \multirow{4}{*}{0.18 - 0.98}                     & \multirow{4}{*}{0.29 - 0.90}                    & \multirow{4}{*}{0.82}                     \\
+                               & 2     & 1.017                  & 0.014                      &                                                  &                                                 &                                           \\
+                               & 3     & 0.990                  & -0.008                     &                                                  &                                                 &                                           \\
+                               & 4     & 1.015                  & 0.012                      &                                                  &                                                 &                                           \\
+\hline
+\multirow{5}{*}{Tier}          & 1     & 0.969                  & -0.025                     & \multirow{5}{*}{0.18 - 0.98}                     & \multirow{5}{*}{0.66 - 0.84}                    & \multirow{5}{*}{0.83}                     \\
+                               & 2     & 0.996                  & -0.003                     &                                                  &                                                 &                                           \\
+                               & 3     & 0.977                  & -0.019                     &                                                  &                                                 &                                           \\
+                               & 4     & 1.001                  & 0.001                      &                                                  &                                                 &                                           \\
+                               & 5     & 0.975                  & -0.021                     &                                                  &                                                 &                                           \\
+\hline
+\multirow{4}{*}{Race}          & asian & 1.018                  & \multicolumn{1}{l|}{0.015}  & \multicolumn{1}{c}{\multirow{4}{*}{0.12 - 0.96}} & \multicolumn{1}{c}{\multirow{4}{*}{0.30- 0.89}} & \multicolumn{1}{c}{\multirow{4}{*}{0.86}} \\
+                               & black & 1.011                  & \multicolumn{1}{l|}{0.010}  & \multicolumn{1}{l}{}                             & \multicolumn{1}{l}{}                            & \multicolumn{1}{l}{}                      \\
+                               & hisp  & 1.001                  & \multicolumn{1}{l|}{0.001}  & \multicolumn{1}{l}{}                             & \multicolumn{1}{l}{}                            & \multicolumn{1}{l}{}                      \\
+                               & other & 0.992                  & \multicolumn{1}{l|}{-0.007} & \multicolumn{1}{l}{}                             & \multicolumn{1}{l}{}                            & \multicolumn{1}{l}{}                     
+\end{tabular}
+\end{table}
+Table 25 presents the XGBoost model’s performance when applying the Demographic Parity (DP) constraint on one feature at a time. The Disparate Impact (DI) values remain very close to 1 across groups, with small SPD (Statistical Parity Difference) values ranging from -0.025 to 0.015, indicating well-balanced group outcomes. Precision and recall ranges (Precision: 0.18–0.98, Recall: 0.29–0.90) show some variability depending on the feature but generally remain robust. Accuracy stays relatively high: 0.82 for Family Income, 0.83 for Tier, and 0.86 for Race. This suggests that XGBoost is able to enforce fairness on individual features without a major hit to performance.
+
+\begin{table}[H]
+\caption{XGBoost performances, all constraints together}
+\begin{tabular}{llcc|ccc}
+\hline
+Bias w.r.t.                    & Group & \multicolumn{1}{l}{DI} & \multicolumn{1}{l}{SPD}    & \multicolumn{1}{l}{Precision (0 - 1)} & \multicolumn{1}{l}{Recall (0 - 1)} & \multicolumn{1}{l}{Accuracy} \\
+\hline
+\multirow{4}{*}{Family Income} & 1     & 1.009                  & 0.007                      & \multirow{13}{*}{0.10 - 0.96}         & \multirow{13}{*}{0.48 - 0.76}      & \multirow{13}{*}{0.75}       \\
+                               & 2     & 1.000                  & 0.000                      &                                       &                                    &                              \\
+                               & 3     & 0.995                  & 0.004                      &                                       &                                    &                              \\
+                               & 4     & 1.015                  & 0.011                      &                                       &                                    &                              \\
+\hline
+\multirow{5}{*}{Tier}          & 1     & 0.997                  & -0.002                     &                                       &                                    &                              \\
+                               & 2     & 0.986                  & -0.010                     &                                       &                                    &                              \\
+                               & 3     & 1.011                  & 0.008                      &                                       &                                    &                              \\
+                               & 4     & 1.019                  & 0.014                      &                                       &                                    &                              \\
+                               & 5     & 1.013                  & 0.010                      &                                       &                                    &                              \\
+\hline
+\multirow{4}{*}{Race}          & asian & 0.998                  & \multicolumn{1}{c|}{-0.001} &                                       &                                    &                              \\
+                               & black & 1.001                  & \multicolumn{1}{c|}{0.001}  &                                       &                                    &                              \\
+                               & hisp  & 1.020                  & \multicolumn{1}{c|}{0.015}  &                                       &                                    &                              \\
+                               & other & 1.023                  & \multicolumn{1}{c|}{0.017}  &                                       &                                    &                             
+\end{tabular}
+\end{table}
+Table 26 shows the performance of XGBoost when DP constraints are applied across all features together. DI and SPD remain well-controlled across all groups (DI: 0.986–1.023, SPD: -0.010–0.017), suggesting the model can enforce fairness effectively in a multi-feature setting. Precision and recall ranges are slightly narrower (Precision: 0.10–0.96, Recall: 0.48–0.76) than in the single-feature scenario, indicating stable but slightly reduced performance. Accuracy drops to 0.75, which is a slight decrease compared to Table 25 but still reflects strong predictive power while enforcing fairness across all features.\\ \\
+Comparing Tables 25 and 26 shows that XGBoost handles the addition of DP constraints quite robustly. When applying constraints on one feature at a time (Table 25), the model maintains high accuracy (0.82–0.86) and wide precision/recall ranges, indicating effective fairness enforcement with minimal performance degradation. When applying all constraints together (Table 26), the model continues to enforce fairness across all groups with only a modest reduction in precision, recall, and accuracy (0.75). Overall, XGBoost demonstrates resilience in balancing fairness and predictive performance, outperforming the Logistic Regression and even slightly outperforming the Random Forest model in terms of stability and accuracy under fairness constraints.
+
+\paragraph{Models Comparison}\mbox{}\\
+Across the experiments applying Demographic Parity (DP) constraints, XGBoost consistently shows strong robustness in maintaining both fairness and performance compared to Logistic Regression (LR) and Random Forest (RF). Specifically, XGBoost achieves high accuracy (~0.75–0.86) with narrower and stable precision/recall ranges, indicating good trade-offs even under fairness constraints. RF also maintains high accuracy (~0.79–0.84) and shows relatively balanced DI and SPD metrics, demonstrating it handles fairness constraints well but with slightly less flexibility than XGBoost. In contrast, LR exhibits a more significant drop in performance (accuracy as low as 0.14) when all constraints are enforced together, revealing its limitations in balancing fairness and predictive power. Overall, XGBoost emerges as the most robust and consistent model across different fairness interventions, followed by RF, while LR struggles under combined constraints.
 
 \section{Results}
 In this study, we have demonstrated that algorithmic bias in educational datasets can be effectively mitigated, particularly through the use of in-processing techniques.
@@ -766,9 +938,8 @@ Looking ahead, we recommend that the following ideas are explored in future work
 Ultimately, we strive to achieve a future where educational ML systems do not only avoid harm, but ensure equity and inclusiveness. Our study is a small step in this direction and we hope it can be a foundation for future research in this field. 
 
 
-
-
-\bibliographystyle{plainurl}
-\bibliography{sample}
+\bibliographystyle{plain}
+\bibliography{biblio} 
+ 
 
 \end{document}

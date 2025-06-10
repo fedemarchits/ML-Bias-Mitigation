@@ -246,7 +246,7 @@ A baseline model has been trained first, but we immediately noticed the first is
 \begin{table}[h!]
 \centering
 \caption{Confusion Matrix for Baseline LR}
-\label{tab:confusion_matrix}
+\label{tab:confusion_matrix1}
 \begin{tabular}{r|cc}
 \toprule
 \textbf{Actual / Predicted} & \textbf{Positive} & \textbf{Negative} \\
@@ -260,7 +260,7 @@ A baseline model has been trained first, but we immediately noticed the first is
 \begin{table}[h!]
 \centering
 \caption{Confusion Matrix for Balanced LR}
-\label{tab:confusion_matrix}
+\label{tab:confusion_matrix2}
 \begin{tabular}{r|cc}
 \toprule
 \textbf{Actual / Predicted} & \textbf{Positive} & \textbf{Negative} \\
@@ -290,7 +290,7 @@ We then performed a \textbf{Grid Search} over different class weights and regula
 \begin{table}[h!]
 \centering
 \caption{Confusion Matrix for Best LR}
-\label{tab:confusion_matrix}
+\label{tab:confusion_matrix3}
 \begin{tabular}{r|cc}
 \toprule
 \textbf{Actual / Predicted} & \textbf{Positive} & \textbf{Negative} \\
@@ -333,7 +333,7 @@ Follows the relative Confusion Matrix on the test set:
 \begin{table}[h!]
 \centering
 \caption{Confusion Matrix for Best RF}
-\label{tab:confusion_matrix}
+\label{tab:confusion_matrix4}
 \begin{tabular}{r|cc}
 \toprule
 \textbf{Actual / Predicted} & \textbf{Positive} & \textbf{Negative} \\
@@ -374,7 +374,7 @@ Follows the relative Confusion Matrix on the test set:
 \begin{table}[h!]
 \centering
 \caption{Confusion Matrix for Best XGBoost}
-\label{tab:confusion_matrix}
+\label{tab:confusion_matrix5}
 \begin{tabular}{r|cc}
 \toprule
 \textbf{Actual / Predicted} & \textbf{Positive} & \textbf{Negative} \\
@@ -394,7 +394,7 @@ Doing so we managed to remove overfitting, the new confusion matrix is:
 \begin{table}[h!]
 \centering
 \caption{Confusion Matrix for Best XGBoost without Overfitting}
-\label{tab:confusion_matrix}
+\label{tab:confusion_matrix6}
 \begin{tabular}{r|cc}
 \toprule
 \textbf{Actual / Predicted} & \textbf{Positive} & \textbf{Negative} \\
@@ -434,7 +434,7 @@ Follows the relative Confusion Matrix on the test set:
 \begin{table}[h!]
 \centering
 \caption{Confusion Matrix for Best MLP}
-\label{tab:confusion_matrix}
+\label{tab:confusion_matrix7}
 \begin{tabular}{r|cc}
 \toprule
 \textbf{Actual / Predicted} & \textbf{Positive} & \textbf{Negative} \\
@@ -846,13 +846,13 @@ Table 23 presents the Random Forest (RF) model’s performance when applying the
                                & 2     & 0.984                  & -0.013                     &                                       &                                    &                              \\
                                & 3     & 1.004                  & 0.003                      &                                       &                                    &                              \\
                                & 4     & 1.001                  & 0.001                      &                                       &                                    &                              \\
-\hline
+\cline{1-4}
 \multirow{5}{*}{Tier}          & 1     & 0.989                  & -0.009                     &                                       &                                    &                              \\
                                & 2     & 0.987                  & -0.010                     &                                       &                                    &                              \\
                                & 3     & 0.989                  & -0.009                     &                                       &                                    &                              \\
                                & 4     & 0.987                  & -0.010                     &                                       &                                    &                              \\
                                & 5     & 0.995                  & -0.004                     &                                       &                                    &                              \\
-\hline
+\cline{1-4}
 \multirow{4}{*}{Race}          & asian & 0.996                  & \multicolumn{1}{l|}{-0.003} &                                       &                                    &                              \\
                                & black & 0.972                  & \multicolumn{1}{l|}{-0.022} &                                       &                                    &                              \\
                                & hisp  & 0.994                  & \multicolumn{1}{l|}{-0.005} &                                       &                                    &                              \\
@@ -897,13 +897,13 @@ Bias w.r.t.                    & Group & \multicolumn{1}{l}{DI} & \multicolumn{1
                                & 2     & 1.000                  & 0.000                      &                                       &                                    &                              \\
                                & 3     & 0.995                  & 0.004                      &                                       &                                    &                              \\
                                & 4     & 1.015                  & 0.011                      &                                       &                                    &                              \\
-\hline
+\cline{1-4}
 \multirow{5}{*}{Tier}          & 1     & 0.997                  & -0.002                     &                                       &                                    &                              \\
                                & 2     & 0.986                  & -0.010                     &                                       &                                    &                              \\
                                & 3     & 1.011                  & 0.008                      &                                       &                                    &                              \\
                                & 4     & 1.019                  & 0.014                      &                                       &                                    &                              \\
                                & 5     & 1.013                  & 0.010                      &                                       &                                    &                              \\
-\hline
+\cline{1-4}
 \multirow{4}{*}{Race}          & asian & 0.998                  & \multicolumn{1}{c|}{-0.001} &                                       &                                    &                              \\
                                & black & 1.001                  & \multicolumn{1}{c|}{0.001}  &                                       &                                    &                              \\
                                & hisp  & 1.020                  & \multicolumn{1}{c|}{0.015}  &                                       &                                    &                              \\
@@ -912,13 +912,61 @@ Bias w.r.t.                    & Group & \multicolumn{1}{l}{DI} & \multicolumn{1
 \end{table}
 Table 26 shows the performance of XGBoost when DP constraints are applied across all features together. DI and SPD remain well-controlled across all groups (DI: 0.986–1.023, SPD: -0.010–0.017), suggesting the model can enforce fairness effectively in a multi-feature setting. Precision and recall ranges are slightly narrower (Precision: 0.10–0.96, Recall: 0.48–0.76) than in the single-feature scenario, indicating stable but slightly reduced performance. Accuracy drops to 0.75, which is a slight decrease compared to Table 25 but still reflects strong predictive power while enforcing fairness across all features.\\ \\
 Comparing Tables 25 and 26 shows that XGBoost handles the addition of DP constraints quite robustly. When applying constraints on one feature at a time (Table 25), the model maintains high accuracy (0.82–0.86) and wide precision/recall ranges, indicating effective fairness enforcement with minimal performance degradation. When applying all constraints together (Table 26), the model continues to enforce fairness across all groups with only a modest reduction in precision, recall, and accuracy (0.75). Overall, XGBoost demonstrates resilience in balancing fairness and predictive performance, outperforming the Logistic Regression and even slightly outperforming the Random Forest model in terms of stability and accuracy under fairness constraints.
+\paragraph{MLP}\mbox{}\\
+Since the Exponentiated Gradient approach was not available for MLP, we developed a different approach which is still based on Demographic Parity. We decided to incorporate fairness directly into the objective function: a \textbf{penalty term} is added to the loss function, it basically measure the demographic parity violation. The penalty has been computed over all three constraints at the same time for each processed batch. The formula is:
+\begin{equation}
+\mathcal{L}(\theta) = \underbrace{\frac{1}{N}\sum_{i=1}^N \ell(y_i, f_\theta(x_i))}_{\text{Standard loss}} + \lambda \cdot \underbrace{\left(\text{DP}(f_\theta)\right)^2}_{\text{Fairness penalty}}
+\end{equation}
 
-\paragraph{Models Comparison}\mbox{}\\
-Across the experiments applying Demographic Parity (DP) constraints, XGBoost consistently shows strong robustness in maintaining both fairness and performance compared to Logistic Regression (LR) and Random Forest (RF). Specifically, XGBoost achieves high accuracy (~0.75–0.86) with narrower and stable precision/recall ranges, indicating good trade-offs even under fairness constraints. RF also maintains high accuracy (~0.79–0.84) and shows relatively balanced DI and SPD metrics, demonstrating it handles fairness constraints well but with slightly less flexibility than XGBoost. In contrast, LR exhibits a more significant drop in performance (accuracy as low as 0.14) when all constraints are enforced together, revealing its limitations in balancing fairness and predictive power. Overall, XGBoost emerges as the most robust and consistent model across different fairness interventions, followed by RF, while LR struggles under combined constraints.
+These are the results for both, fairness and performance:
+
+\begin{table}[H]
+\caption{MLP performances, all constraints together}
+\label{tab:mlp-performances}
+\begin{tabular}{llcc|ccc}
+\hline
+Bias w.r.t.                    & Group & \multicolumn{1}{l}{DI} & \multicolumn{1}{l}{SPD}    & \multicolumn{1}{l}{Precision (0 - 1)} & \multicolumn{1}{l}{Recall (0 - 1)} & \multicolumn{1}{l}{Accuracy} \\
+\hline
+\multirow{4}{*}{Family Income} & 1     & 0.991                  & -0.009                      & \multirow{13}{*}{0.05 - 0.95}         & \multirow{13}{*}{0.04 - 0.97}      & \multirow{13}{*}{0.92}       \\
+                               			& 2     & 1.016                  & 0.0015                      &                                       &                                    &                              \\
+                              			 & 3     & 1.019                  & 0.018                      &                                       &                                    &                              \\
+                               			& 4     & 1.012                  & 0.011                      &                                       &                                    &                              \\
+\cline{1-4}
+\multirow{5}{*}{Tier}          & 1     & 0.879                  & -0.120                     &                                       &                                    &                              \\
+                               		& 2     & 0.914                  & -0.086                     &                                       &                                    &                              \\
+                              		 & 3     & 0.956                  & -0.044                      &                                       &                                    &                              \\
+                            		   & 4     & 0.986                  & -0.014                      &                                       &                                    &                              \\
+                           		    & 5     & 0.979                 & -0.021                      &                                       &                                    &                              \\
+\cline{1-4}
+\multirow{4}{*}{Race}          & asian & 1.009                 & \multicolumn{1}{c|}{0.009} &                                       &                                    &                              \\
+                            		   & black & 0.983                  & \multicolumn{1}{c|}{-0.016}  &                                       &                                    &                              \\
+                            		   & hisp  & 0.991                  & \multicolumn{1}{c|}{-0.009}  &                                       &                                    &                              \\
+                            		   & other & 0.0882                  & \multicolumn{1}{c|}{-0.114}  &                                       &                                    &                             
+\end{tabular}
+\end{table}
+
+As shown in Table \ref{tab:mlp-performances}, the MLP trained with a fairness penalty term tends to predict class 1 most of the time (evidenced by the very low precision and recall for class 0). The more similar the predictions become across groups, the more the bias is reduced. However, it was challenging to prevent the model from consistently predicting 1, as increasing the penalty term's influence would push the network toward predicting all instances as class 1. While the bias was successfully reduced for most features, the model still struggles somewhat to guarantee equality between 'white' and 'other' groups in the 'race' feature.
+
+\paragraph{Debiased Models Comparison}\mbox{}\\
+
+\begin{figure}[h!]
+      \centering
+      \includegraphics[width=1\textwidth]{models_comp_one_at_time.png} 
+      \caption{Models Comparison One Constraint at time}
+      \label{fig:example}
+    \end{figure}
+\begin{figure}[h!]
+      \centering
+      \includegraphics[width=1\textwidth]{model_cons_all_tog.png} 
+      \caption{Models Comparison all Constraints Together}
+      \label{fig:example}
+    \end{figure}
+
+When evaluating the performance of various models (Logistic Regression, Random Forest, XGBoost, and MLP) under Demographic Parity (DP) constraints, a clear pattern emerges: Random Forest and XGBoost generally strike the best balance between maintaining fairness and predictive accuracy, whether constraints are applied individually or together. Logistic Regression, while performing reasonably well with single constraints (except for Family Income), significantly deteriorates in accuracy when all constraints are simultaneously enforced. Conversely, the MLP model achieves the highest overall accuracy with all constraints, though it shows some localized fairness challenges for specific groups within Tier and Race features, despite its strong global performance. This suggests that while ensemble methods like Random Forest and XGBoost offer robust and balanced outcomes, the MLP, despite its high accuracy, might require further fine-tuning to ensure consistent fairness across all demographic subgroups.
 
 \section{Results}
 In this study, we have demonstrated that algorithmic bias in educational datasets can be effectively mitigated, particularly through the use of in-processing techniques.
-Our findings reinforce the growing consensus in the fairness research community: that modifying the learning algorithm itself, rather than simply adjusting the data, yields more robust and scalable fairness outcomes. Inprocessing techniques are effectively controlling the behaviour of the model itself, having a direct access to the model's optimization loo, which allows for optimization of the trade-off between fairness and accuracy. The inprocessing techniques also can adapt dynamically to the data distribution and model's performance, while preprocessing techniques only rely on the static modification of the data. We have showed that this data manipulation can work on less refined and more "gullible" models, but not on the more advanced ones, which is a great downside. Furthermore, preprocessing may introduce irreversible distortions or oversimplifications in the data that degrade the model’s ability to learn generalizable patterns.
+Our findings reinforce the growing consensus in the fairness research community: that modifying the learning algorithm itself, rather than simply adjusting the data, yields more robust and scalable fairness outcomes. { techniques are effectively controlling the behaviour of the model itself, having a direct access to the model's optimization loo, which allows for optimization of the trade-off between fairness and accuracy. The inprocessing techniques also can adapt dynamically to the data distribution and model's performance, while preprocessing techniques only rely on the static modification of the data. We have showed that this data manipulation can work on less refined and more "gullible" models, but not on the more advanced ones, which is a great downside. Furthermore, preprocessing may introduce irreversible distortions or oversimplifications in the data that degrade the model’s ability to learn generalizable patterns.
 
 Lastly, we find worth mentioning that according to previous research (\href{https://www.researchgate.net/publication/387044808_Fair_and_Transparent_Student_Admission_Prediction_Using_Machine_Learning_Models#read}{Fair and Transparent Student Admission Prediction Using Machine Learning Models}) Logistic Regression proved to be the fairest model to use in this context. This model is, as previously mentioned, extremely simple and transparent, which are huge upsides. On the other hand, though, it is necessary to underline that our dataset has a relatively small number of features. This is giving LR an advantage compared to the other models, but it is of high importance to investigate its behaviour in a more complex case. Still, it seems that our study further enhances the hypothesis advanced by G. Raftopoulos et al. which puts this model at the top of the fairness hierarchy for educational admission prediction tasks. However, it is important to emphasize that such a conclusion may not generalize across all educational contexts or datasets. 
 

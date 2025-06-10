@@ -464,13 +464,13 @@ As shown in the table, the model generalizes well, with almost no overfitting:
 \label{tab:logreg_report}
 \end{table}
 \subsubsection{Comparing all models}
-\begin{figure}[]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.8\textwidth]{model_comparison.png}
   \caption{Accuracy and F-beta score for each best model.}
   \label{fig:model_comparison}
 \end{figure}
-Logistic Regression and MLP have the highest F2 scores (0.48), indicating strong recall on class 0. Logistic Regression also has the best accuracy (0.86), making it the most balanced performer. XGBoost lags in accuracy (0.78), while Random Forest performs slightly lower overall.
+Logistic Regression and MLP have the highest F2 scores (0.48), indicating strong recall on class 0. Logistic Regression also has a nice accuracy (0.86), making it the most balanced performer. XGBoost lags in accuracy (0.78), while Random Forest performs slightly lower overall. MLP is quite accurate, but from F2 score we can deduce it tends to predict 1 most of the time.
 \subsection{Bias detection after prediction}
 After the predictions are performed, it is necessary to check if the new predicted label conveys the same type of bias that is observable in the ground truth variable. When the same analysis is conducted, what is observable is a worsening of the situation in all three features where bias was present. 
 
@@ -963,6 +963,14 @@ As shown in Table \ref{tab:mlp-performances}, the MLP trained with a fairness pe
     \end{figure}
 
 When evaluating the performance of various models (Logistic Regression, Random Forest, XGBoost, and MLP) under Demographic Parity (DP) constraints, a clear pattern emerges: Random Forest and XGBoost generally strike the best balance between maintaining fairness and predictive accuracy, whether constraints are applied individually or together. Logistic Regression, while performing reasonably well with single constraints (except for Family Income), significantly deteriorates in accuracy when all constraints are simultaneously enforced. Conversely, the MLP model achieves the highest overall accuracy with all constraints, though it shows some localized fairness challenges for specific groups within Tier and Race features, despite its strong global performance. This suggests that while ensemble methods like Random Forest and XGBoost offer robust and balanced outcomes, the MLP, despite its high accuracy, might require further fine-tuning to ensure consistent fairness across all demographic subgroups.
+
+
+\section{Contributions}
+\begin{itemize}
+    \item \textbf{Baytcheva Christina}: EDA for academic features, first bias detection, literature review, writing of report;
+    \item \textbf{Di Iulio Anna}: EDA for demographic features, bias detection after prediction, preprocessing mitigation techniques, writing of report;
+    \item \textbf{Marchi Federico}: models, neural network and predictions, in-processing mitigation techniques, writing of report.
+\end{itemize}
 
 \section{Results}
 In this study, we have demonstrated that algorithmic bias in educational datasets can be effectively mitigated, particularly through the use of in-processing techniques.
